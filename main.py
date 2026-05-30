@@ -3,15 +3,19 @@ import network as net
 import weather
 import irrigation
 import status
+import ota
 import config
 
 print("=== ESP32 Rain Sensor booting ===")
 
 status.set_status("error")   # fast-blink until first successful check
 
-net.connect()
+connected = net.connect()
+if connected:
+    ota.start()
 
 _last_check = 0
+_ota_started = connected
 
 
 def run_weather_cycle():
@@ -30,7 +34,7 @@ def run_weather_cycle():
 
 
 # Check immediately on boot (if WiFi is up)
-if net.is_connected():
+if connected:
     run_weather_cycle()
 
 while True:
@@ -42,6 +46,11 @@ while True:
         irrigation.allow()
         status.set_status("error")
         continue
+
+    # Start OTA the first time we get a connection (handles boot with no WiFi)
+    if not _ota_started:
+        ota.start()
+        _ota_started = True
 
     now = time.time()
     if now - _last_check >= config.CHECK_INTERVAL_S:
