@@ -7,6 +7,9 @@ _HOST = "api.openweathermap.org"
 _CURRENT_PATH = "/data/2.5/weather"
 _FORECAST_PATH = "/data/2.5/forecast"
 
+with open("owm_ca.pem", "r") as _f:
+    _CA_CERT = _f.read()
+
 
 def _https_get(path: str, params: dict) -> tuple:
     """
@@ -25,13 +28,11 @@ def _https_get(path: str, params: dict) -> tuple:
     sock.settimeout(15)
     try:
         sock.connect(addr)
-        with open("owm_ca.pem", "r") as f:
-            ca_data = f.read()
         wrapped = ussl.wrap_socket(
             sock,
             server_hostname=_HOST,
             cert_reqs=ussl.CERT_REQUIRED,
-            ca_certs=ca_data,
+            ca_certs=_CA_CERT,
         )
         wrapped.write(request.encode())
         response = b""
