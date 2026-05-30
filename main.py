@@ -1,16 +1,32 @@
 import time
 import network as net
+import weather
+import irrigation
+import config
 
 print("=== ESP32 Rain Sensor booting ===")
 
-connected = net.connect()
-if not connected:
-    print("WiFi: failed to connect on boot — will retry in main loop")
+net.connect()
 
-# Placeholder main loop — subsequent issues fill this in
+_last_check = 0
+
+
+def run_weather_cycle():
+    global _last_check
+    if not net.is_connected():
+        print("Main: WiFi not connected, skipping weather check — fail-open")
+        irrigation.allow()
+        return
+    rain_3h, forecast_12h, success = weather.check_weather()
+    irrigation.update(rain_3h, forecast_12h, success)
+    _last_check = time.time()
+
+
+# Check immediately on boot
+run_weather_cycle()
+
 while True:
-    if net.is_connected():
-        print(f"WiFi: OK, IP={net.ip_address()}")
-    else:
-        print("WiFi: not connected")
-    time.sleep(30)
+    time.sleep(10)
+    now = time.time()
+    if now - _last_check >= config.CHECK_INTERVAL_S:
+        run_weather_cycle()
