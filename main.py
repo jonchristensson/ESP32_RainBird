@@ -1,5 +1,5 @@
 import time
-import network as net
+import wifi as net
 import weather
 import irrigation
 import status
@@ -12,6 +12,12 @@ status.set_status("error")   # fast-blink until first successful check
 
 connected = net.connect()
 if connected:
+    import ntptime
+    try:
+        ntptime.settime()
+        print("NTP: time synchronized")
+    except Exception as e:
+        print(f"NTP: sync failed — {e}")
     ota.start()
 
 _last_check = 0

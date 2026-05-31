@@ -1,6 +1,6 @@
-import ujson
-import ussl
-import usocket
+import json as ujson
+import ssl as ussl
+import socket as usocket
 import config
 
 _HOST = "api.openweathermap.org"
@@ -32,7 +32,7 @@ def _https_get(path: str, params: dict) -> tuple:
             sock,
             server_hostname=_HOST,
             cert_reqs=ussl.CERT_REQUIRED,
-            ca_certs=_CA_CERT,
+            cadata=_CA_CERT,
         )
         wrapped.write(request.encode())
         response = b""
@@ -78,8 +78,9 @@ def check_weather() -> tuple:
 
         data = ujson.loads(body)
         if "rain" in data:
-            rain_3h = float(data["rain"].get("3h", 0.0))
-        print(f"Weather: recent rain (3h) = {rain_3h:.3f} in")
+            rain_mm = data["rain"].get("1h", data["rain"].get("3h", 0.0))
+            rain_3h = float(rain_mm) / 25.4  # mm → inches
+        print(f"Weather: recent rain = {rain_3h:.3f} in")
 
         # --- Forecast ---
         status, body = _https_get(_FORECAST_PATH, _base_params())
@@ -90,7 +91,7 @@ def check_weather() -> tuple:
         data = ujson.loads(body)
         blocks = data.get("list", [])[:4]   # first 4 × 3h blocks = 12h
         for block in blocks:
-            forecast_12h += float(block.get("rain", {}).get("3h", 0.0))
+            forecast_12h += float(block.get("rain", {}).get("3h", 0.0)) / 25.4  # mm → inches
         print(f"Weather: forecast rain (12h) = {forecast_12h:.3f} in")
 
         return rain_3h, forecast_12h, True

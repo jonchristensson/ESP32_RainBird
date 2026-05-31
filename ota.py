@@ -25,5 +25,8 @@ import webrepl
 
 def start() -> None:
     """Start the WebREPL OTA listener. Called from boot.py after WiFi connects."""
-    webrepl.start()
-    print("OTA: WebREPL started on port 8266")
+    try:
+        webrepl.start()
+        print("OTA: WebREPL started on port 8266")
+    except ValueError:
+        print("OTA: WebREPL failed to start — password must be 4-9 characters (check OTA_PASSWORD in secrets.py)")
