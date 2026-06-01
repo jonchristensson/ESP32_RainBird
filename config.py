@@ -1,14 +1,13 @@
 from secrets import (
     WIFI_SSID,
     WIFI_PASSWORD,
-    OWM_API_KEY,
     LATITUDE,
     LONGITUDE,
     OTA_PASSWORD,
 )
 
 # Rainfall thresholds (inches)
-RAIN_THRESHOLD_3H = 0.25    # block if recent 3h rain exceeds this
+RAIN_THRESHOLD_6H = 0.25    # block if recent 6h rain exceeds this
 RAIN_THRESHOLD_12H = 0.5    # block if 12h forecast exceeds this
 
 # Timing
