@@ -3,20 +3,14 @@ import ssl as ussl
 import socket as usocket
 import config
 
-_HOST = "api.openweathermap.org"
-_CURRENT_PATH = "/data/2.5/weather"
-_FORECAST_PATH = "/data/2.5/forecast"
+_HOST = "api.open-meteo.com"
+_PATH = "/v1/forecast"
 
-with open("owm_ca.pem", "r") as _f:
+with open("ca.pem", "r") as _f:
     _CA_CERT = _f.read()
 
 
-def _https_get(path: str, params: dict) -> tuple:
-    """
-    Minimal HTTPS GET using raw sockets + ussl with cert verification.
-    Returns (status_code: int, body: str) or raises on connection failure.
-    """
-    query = "&".join(f"{k}={v}" for k, v in params.items())
+def _https_get(path: str, query: str) -> tuple:
     request = (
         f"GET {path}?{query} HTTP/1.0\r\n"
         f"Host: {_HOST}\r\n"
@@ -51,50 +45,29 @@ def _https_get(path: str, params: dict) -> tuple:
     return status_code, body
 
 
-def _base_params() -> dict:
-    return {
-        "lat": config.LATITUDE,
-        "lon": config.LONGITUDE,
-        "appid": config.OWM_API_KEY,
-        "units": "imperial",
-    }
-
-
 def check_weather() -> tuple:
-    """
-    Fetch current weather and 12h forecast from OpenWeatherMap.
-    Returns (rain_3h: float, forecast_12h: float, success: bool).
-    On any error returns (0.0, 0.0, False).
-    """
-    rain_3h = 0.0
+    rain_6h = 0.0
     forecast_12h = 0.0
 
     try:
-        # --- Current weather ---
-        status, body = _https_get(_CURRENT_PATH, _base_params())
+        query = (
+            f"latitude={config.LATITUDE}&longitude={config.LONGITUDE}"
+            "&hourly=precipitation&precipitation_unit=inch"
+            "&past_hours=6&forecast_hours=12"
+        )
+        status, body = _https_get(_PATH, query)
         if status != 200:
-            print(f"Weather: current endpoint returned HTTP {status}")
+            print(f"Weather: endpoint returned HTTP {status}")
             return 0.0, 0.0, False
 
         data = ujson.loads(body)
-        if "rain" in data:
-            rain_mm = data["rain"].get("1h", data["rain"].get("3h", 0.0))
-            rain_3h = float(rain_mm) / 25.4  # mm → inches
-        print(f"Weather: recent rain = {rain_3h:.3f} in")
+        precip = data["hourly"]["precipitation"]
 
-        # --- Forecast ---
-        status, body = _https_get(_FORECAST_PATH, _base_params())
-        if status != 200:
-            print(f"Weather: forecast endpoint returned HTTP {status}")
-            return rain_3h, 0.0, False
+        rain_6h = sum(precip[:6])
+        forecast_12h = sum(precip[6:])
 
-        data = ujson.loads(body)
-        blocks = data.get("list", [])[:4]   # first 4 × 3h blocks = 12h
-        for block in blocks:
-            forecast_12h += float(block.get("rain", {}).get("3h", 0.0)) / 25.4  # mm → inches
-        print(f"Weather: forecast rain (12h) = {forecast_12h:.3f} in")
-
-        return rain_3h, forecast_12h, True
+        print(f"Weather: rain_6h={rain_6h:.3f}\" forecast_12h={forecast_12h:.3f}\"")
+        return rain_6h, forecast_12h, True
 
     except OSError as e:
         print(f"Weather: network error — {e}")
