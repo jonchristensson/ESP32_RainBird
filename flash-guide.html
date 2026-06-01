@@ -423,10 +423,6 @@
                 <td>Your WiFi password</td>
               </tr>
               <tr>
-                <td><code>OWM_API_KEY</code></td>
-                <td>Your OpenWeatherMap API key. Get a free one at <strong>openweathermap.org/api</strong> — the free tier allows 1,000 calls/day; this firmware uses ~192/day.</td>
-              </tr>
-              <tr>
                 <td><code>LATITUDE</code></td>
                 <td>Your location's latitude in decimal degrees (e.g. <code>"36.4620"</code>). Find it on Google Maps: right-click your house → the first number shown.</td>
               </tr>
@@ -442,7 +438,7 @@
           </table>
 
           <div class="note">
-            <strong>New OpenWeatherMap API key?</strong> Free keys are active within a few minutes but can take up to 2 hours. If you get HTTP 401 errors in Step 4, wait a bit and try again.
+            No API key is needed — Open-Meteo is free and keyless.
           </div>
         </div>
       </div>
@@ -483,9 +479,9 @@
         <div class="substep-num">2</div>
         <div class="substep-content">
           <p>From the project root directory, run this single command (replace COM4 with your port):</p>
-          <pre><code>mpremote connect COM4 cp boot.py main.py config.py network.py weather.py irrigation.py status.py ota.py webrepl_cfg.py secrets.py owm_ca.pem :</code></pre>
+          <pre><code>mpremote connect COM4 cp boot.py main.py config.py wifi.py weather.py irrigation.py status.py ota.py webrepl_cfg.py secrets.py ca.pem :</code></pre>
           <div class="note">The <strong>trailing colon (<code>:</code>)</strong> means "copy to the root of the device filesystem." Don't omit it.</div>
-          <p>You'll see each filename printed as it uploads. The <span class="inline-code">owm_ca.pem</span> certificate is the largest file and takes a few extra seconds.</p>
+          <p>You'll see each filename printed as it uploads.</p>
         </div>
       </div>
 
@@ -533,10 +529,10 @@
 <span class="dim">Status: None -> error</span>
 WiFi: connecting to <span class="highlight">MyNetwork</span>...
 WiFi: connected, IP=<span class="highlight"><device_ip></span>
+NTP: time synchronized
 OTA: WebREPL started on port 8266
-Weather: recent rain (3h) = 0.000 in
-Weather: forecast rain (12h) = 0.000 in
-Irrigation: allowing — rain_3h=0.000" forecast_12h=0.000", relay de-energized
+Weather: rain_6h=0.000" forecast_12h=0.000"
+Irrigation: allowing — rain_6h=0.000" forecast_12h=0.000", relay de-energized
 <span class="highlight">Status: error -> ok</span>
           </div>
           <p>After the first cycle the device runs a weather check every 15 minutes. You'll see the Weather and Irrigation lines repeat on each cycle.</p>
@@ -549,7 +545,7 @@ Irrigation: allowing — rain_3h=0.000" forecast_12h=0.000", relay de-energized
         <div class="substep-content">
           <ul class="checklist">
             <li>Serial shows <em>"WiFi: connected, IP=…"</em> — WiFi credentials are correct and device can join the network</li>
-            <li>Serial shows <em>"Weather: recent rain…"</em> lines — API key is valid and device reached OpenWeatherMap over HTTPS</li>
+            <li>Serial shows <em>"Weather: rain_6h=…"</em> line — device reached Open-Meteo over HTTPS</li>
             <li>Serial shows <em>"Irrigation: allowing…"</em> or <em>"Irrigation: BLOCKING…"</em> — relay logic is running</li>
             <li>Status reaches <em>"ok"</em> (solid LED) on a clear day, or <em>"rain"</em> (slow blink) if thresholds are exceeded</li>
             <li>No <em>"Traceback"</em> or <em>"Error"</em> lines in output</li>
@@ -572,7 +568,7 @@ Irrigation: allowing — rain_3h=0.000" forecast_12h=0.000", relay de-energized
               </tr>
               <tr>
                 <td>Weather lines never appear / <em>OSError</em> on HTTPS</td>
-                <td>API key invalid or not yet active (new keys take up to 2 hours). Check key at openweathermap.org. Also verify lat/lon are strings in quotes.</td>
+                <td>TLS verification failed or network issue. Verify <span class="inline-code">ca.pem</span> was uploaded. Check that lat/lon are strings in quotes in <span class="inline-code">secrets.py</span>.</td>
               </tr>
               <tr>
                 <td><em>SyntaxError</em> or <em>ImportError</em> in traceback</td>
