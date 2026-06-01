@@ -4,19 +4,15 @@ import config
 _relay = Pin(config.RELAY_PIN, Pin.OUT, value=0)   # de-energized (fail-open) on init
 
 
-def update(rain_3h: float, forecast_12h: float, success: bool) -> str:
-    """
-    Apply thresholds and set the relay.
-    Returns 'blocked' or 'allowed' reflecting the action taken.
-    """
+def update(rain_6h: float, forecast_12h: float, success: bool) -> str:
     if not success:
         _relay.value(0)
         print("Irrigation: API failed — fail-open, relay de-energized (irrigation ALLOWED)")
         return "allowed"
 
     reasons = []
-    if rain_3h > config.RAIN_THRESHOLD_3H:
-        reasons.append(f"recent rain {rain_3h:.3f}\" > {config.RAIN_THRESHOLD_3H}\"")
+    if rain_6h > config.RAIN_THRESHOLD_6H:
+        reasons.append(f"recent rain {rain_6h:.3f}\" > {config.RAIN_THRESHOLD_6H}\"")
     if forecast_12h > config.RAIN_THRESHOLD_12H:
         reasons.append(f"forecast {forecast_12h:.3f}\" > {config.RAIN_THRESHOLD_12H}\"")
 
@@ -27,7 +23,7 @@ def update(rain_3h: float, forecast_12h: float, success: bool) -> str:
     else:
         _relay.value(0)
         print(
-            f"Irrigation: allowing — rain_3h={rain_3h:.3f}\" "
+            f"Irrigation: allowing — rain_6h={rain_6h:.3f}\" "
             f"forecast_12h={forecast_12h:.3f}\", relay de-energized"
         )
         return "allowed"

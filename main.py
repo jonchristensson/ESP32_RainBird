@@ -26,8 +26,8 @@ _ota_started = connected
 
 def run_weather_cycle():
     global _last_check
-    rain_3h, forecast_12h, success = weather.check_weather()
-    action = irrigation.update(rain_3h, forecast_12h, success)
+    rain_6h, forecast_12h, success = weather.check_weather()
+    action = irrigation.update(rain_6h, forecast_12h, success)
 
     if not success:
         status.set_status("error")
