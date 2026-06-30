@@ -4,6 +4,7 @@ from secrets import (
     LATITUDE,
     LONGITUDE,
     OTA_PASSWORD,
+    GOOGLE_SHEETS_URL,
 )
 
 # Rainfall thresholds (inches)
