@@ -6,8 +6,20 @@ import irrigation
 import status
 import ota
 import config
+import reset_tracker
 
 print("=== ESP32 Rain Sensor booting ===")
+
+if reset_tracker.is_boot_looping():
+    import machine
+    cause = machine.reset_cause()
+    print(f"=== SAFE MODE: {reset_tracker.count} rapid resets, cause={cause} — awaiting OTA repair ===")
+    irrigation.allow()
+    status.set_status("safe")
+    if net.connect():
+        ota.start()
+    while True:
+        time.sleep(10)
 
 status.set_status("error")   # fast-blink until first successful check
 
@@ -23,6 +35,8 @@ if connected:
 
 _last_check = 0
 _ota_started = connected
+_boot_time = time.time()
+_counter_cleared = False
 
 
 def run_weather_cycle():
@@ -47,6 +61,10 @@ if connected:
 
 while True:
     time.sleep(10)
+
+    if not _counter_cleared and (time.time() - _boot_time) >= 60:
+        reset_tracker.clear_counter()
+        _counter_cleared = True
 
     connected = net.tick()   # handles reconnect + watchdog
 

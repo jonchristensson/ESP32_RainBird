@@ -10,6 +10,7 @@ _PERIODS = {
     "ok":    None,    # solid on, no timer needed
     "rain":  500,     # 1s cycle → toggle every 500ms
     "error": 125,     # 250ms cycle → toggle every 125ms
+    "safe":  1000,    # 2s cycle → toggle every 1000ms
 }
 
 
@@ -35,6 +36,10 @@ def set_status(state: str) -> None:
     elif state == "error":
         _led.value(0)
         _timer.init(period=_PERIODS["error"], mode=Timer.PERIODIC,
+                    callback=lambda t: _led.value(not _led.value()))
+    elif state == "safe":
+        _led.value(0)
+        _timer.init(period=_PERIODS["safe"], mode=Timer.PERIODIC,
                     callback=lambda t: _led.value(not _led.value()))
     else:
         _led.value(0)
