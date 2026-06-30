@@ -1,3 +1,4 @@
+import gc
 import json as ujson
 import ssl as ussl
 import socket as usocket
@@ -6,11 +7,13 @@ import config
 _HOST = "api.open-meteo.com"
 _PATH = "/v1/forecast"
 
-with open("ca.pem", "r") as _f:
-    _CA_CERT = _f.read()
+_MAX_RESPONSE_BYTES = 16384
 
 
 def _https_get(path: str, query: str) -> tuple:
+    with open("ca.pem", "r") as f:
+        ca_cert = f.read()
+
     request = (
         f"GET {path}?{query} HTTP/1.0\r\n"
         f"Host: {_HOST}\r\n"
@@ -20,13 +23,14 @@ def _https_get(path: str, query: str) -> tuple:
     addr = usocket.getaddrinfo(_HOST, 443, 0, usocket.SOCK_STREAM)[0][-1]
     sock = usocket.socket()
     sock.settimeout(15)
+    wrapped = None
     try:
         sock.connect(addr)
         wrapped = ussl.wrap_socket(
             sock,
             server_hostname=_HOST,
             cert_reqs=ussl.CERT_REQUIRED,
-            cadata=_CA_CERT,
+            cadata=ca_cert,
         )
         wrapped.write(request.encode())
         response = b""
@@ -35,8 +39,14 @@ def _https_get(path: str, query: str) -> tuple:
             if not chunk:
                 break
             response += chunk
+            if len(response) > _MAX_RESPONSE_BYTES:
+                raise ValueError(f"Response exceeded {_MAX_RESPONSE_BYTES}B cap")
     finally:
-        sock.close()
+        if wrapped is not None:
+            wrapped.close()
+        else:
+            sock.close()
+        gc.collect()
 
     response = response.decode("utf-8")
     header, _, body = response.partition("\r\n\r\n")
@@ -55,6 +65,7 @@ def check_weather() -> tuple:
             "&hourly=precipitation&precipitation_unit=inch"
             "&past_hours=6&forecast_hours=12"
         )
+        print(f"Weather: heap before = {gc.mem_free()} bytes")  # TEMP: remove before final deploy
         status, body = _https_get(_PATH, query)
         if status != 200:
             print(f"Weather: endpoint returned HTTP {status}")
@@ -65,6 +76,10 @@ def check_weather() -> tuple:
 
         rain_6h = sum(precip[:6])
         forecast_12h = sum(precip[6:])
+
+        del precip, data, body
+        gc.collect()
+        print(f"Weather: heap after = {gc.mem_free()} bytes")  # TEMP: remove before final deploy
 
         print(f"Weather: rain_6h={rain_6h:.3f}\" forecast_12h={forecast_12h:.3f}\"")
         return rain_6h, forecast_12h, True

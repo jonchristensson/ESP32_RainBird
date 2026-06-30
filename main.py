@@ -1,3 +1,4 @@
+import gc
 import time
 import wifi as net
 import weather
@@ -37,6 +38,7 @@ def run_weather_cycle():
         status.set_status("ok")
 
     _last_check = time.time()
+    gc.collect()
 
 
 # Check immediately on boot (if WiFi is up)
