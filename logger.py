@@ -59,14 +59,6 @@ def _https_post(host, path, body_bytes, ca_cert):
     status_line = header.split("\r\n")[0]
     status_code = int(status_line.split(" ")[1])
 
-    # Follow one redirect (Google Apps Script issues a 302 to googleusercontent.com)
-    if status_code in (301, 302, 307, 308):
-        for line in header.split("\r\n"):
-            if line.lower().startswith("location:"):
-                location = line.split(":", 1)[1].strip()
-                redir_host, redir_path = _parse_url(location)
-                return _https_post(redir_host, redir_path, body_bytes, ca_cert)
-
     return status_code, body
 
 
@@ -94,7 +86,7 @@ def log(event, rain_6h, forecast_12h, decision, block_reason, api_success):
             ca_cert = f.read()
 
         status, _ = _https_post(host, path, payload, ca_cert)
-        if status == 200:
+        if status in (200, 302):
             print(f"Logger: {event} logged OK")
         else:
             print(f"Logger: server returned {status}")
