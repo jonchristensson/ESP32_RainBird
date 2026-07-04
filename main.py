@@ -7,6 +7,7 @@ import status
 import ota
 import config
 import reset_tracker
+import logger
 
 print("=== ESP32 Rain Sensor booting ===")
 
@@ -39,7 +40,7 @@ _boot_time = time.time()
 _counter_cleared = False
 
 
-def run_weather_cycle():
+def run_weather_cycle(event="check"):
     global _last_check
     rain_6h, forecast_12h, success = weather.check_weather()
     action = irrigation.update(rain_6h, forecast_12h, success)
@@ -52,12 +53,23 @@ def run_weather_cycle():
         status.set_status("ok")
 
     _last_check = time.time()
+
+    block_reason = None
+    if action == "blocked":
+        parts = []
+        if rain_6h > config.RAIN_THRESHOLD_6H:
+            parts.append(f"rain {rain_6h:.3f}\"")
+        if forecast_12h > config.RAIN_THRESHOLD_12H:
+            parts.append(f"forecast {forecast_12h:.3f}\"")
+        block_reason = ", ".join(parts) if parts else "threshold exceeded"
+
+    logger.log(event, rain_6h, forecast_12h, action, block_reason, success)
     gc.collect()
 
 
 # Check immediately on boot (if WiFi is up)
 if connected:
-    run_weather_cycle()
+    run_weather_cycle("boot")
 
 while True:
     time.sleep(10)
