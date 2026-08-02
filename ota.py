@@ -15,9 +15,8 @@ Push a file from PC:
 Download webrepl_cli.py from:
   https://raw.githubusercontent.com/micropython/webrepl/master/webrepl_cli.py
 
-After pushing all updated files, reboot the device:
-  python webrepl_cli.py -p <OTA_PASSWORD> --reboot <device_ip>
-  (or push a main.py that imports machine; machine.reset() at top level)
+After pushing all updated files, reboot the device by power-cycling it.
+  Note: the --reboot flag shown in some webrepl docs does not exist in webrepl_cli.py.
 """
 
 import webrepl
