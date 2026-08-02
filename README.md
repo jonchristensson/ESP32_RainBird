@@ -144,7 +144,7 @@ All tunable constants are in `config.py`:
 | `RELAY_PIN` | `22` | GPIO pin for relay signal |
 | `LED_PIN` | `2` | GPIO pin for onboard LED |
 
-To temporarily force a rain condition for testing, set `RAIN_THRESHOLD_6H = 0.0` — any non-zero recent rain will trigger blocking.
+To temporarily force a rain condition for testing, set `RAIN_THRESHOLD_6H = -1.0`. The comparison is strict (`rain_6h > threshold`), and `rain_6h` is a sum of API-reported precipitation that's often exactly `0.000` on a dry day — `0.0` as the threshold won't reliably trigger a block. A negative threshold guarantees it, since `rain_6h` can't be negative.
 
 ---
 

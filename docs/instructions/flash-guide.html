@@ -479,8 +479,9 @@
         <div class="substep-num">2</div>
         <div class="substep-content">
           <p>From the project root directory, run this single command (replace COM4 with your port):</p>
-          <pre><code>mpremote connect COM4 cp boot.py main.py config.py wifi.py weather.py irrigation.py status.py ota.py webrepl_cfg.py secrets.py ca.pem :</code></pre>
+          <pre><code>mpremote connect COM4 cp boot.py main.py config.py wifi.py weather.py irrigation.py status.py ota.py reset_tracker.py logger.py webrepl_cfg.py secrets.py ca.pem google_ca.pem :</code></pre>
           <div class="note">The <strong>trailing colon (<code>:</code>)</strong> means "copy to the root of the device filesystem." Don't omit it.</div>
+          <div class="warning"><strong>Keep this list in sync with <code>main.py</code>'s imports.</strong> If a new module gets added to the project (like <code>reset_tracker.py</code> or <code>logger.py</code> were), it has to be added here too, or the device silently keeps running the old version — the code changes in git, but nothing on the actual hardware does. There's no error for this; it just quietly doesn't happen.</div>
           <p>You'll see each filename printed as it uploads.</p>
         </div>
       </div>
