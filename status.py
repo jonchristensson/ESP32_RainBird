@@ -8,7 +8,7 @@ _current_state = None
 # Blink periods in ms (half-period — each timer tick toggles the LED)
 _PERIODS = {
     "ok":    None,    # solid on, no timer needed
-    "rain":  500,     # 1s cycle → toggle every 500ms
+    "rain":  1500,    # 3s cycle → toggle every 1500ms
     "error": 125,     # 250ms cycle → toggle every 125ms
     "safe":  1000,    # 2s cycle → toggle every 1000ms
 }

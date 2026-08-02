@@ -19,4 +19,5 @@ WIFI_WATCHDOG_TIMEOUT_S = 300    # reboot after this many seconds disconnected
 
 # GPIO pins
 RELAY_PIN = 22
-LED_PIN = 2                 # onboard LED on most ESP32-WROOM-32 boards
+LED_PIN = 2                 # external LED + 330 ohm resistor — no onboard LED on this ESP32-WROOM-32U
+
