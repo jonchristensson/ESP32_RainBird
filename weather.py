@@ -65,7 +65,6 @@ def check_weather() -> tuple:
             "&hourly=precipitation&precipitation_unit=inch"
             "&past_hours=6&forecast_hours=12"
         )
-        print(f"Weather: heap before = {gc.mem_free()} bytes")  # TEMP: remove before final deploy
         status, body = _https_get(_PATH, query)
         if status != 200:
             print(f"Weather: endpoint returned HTTP {status}")
@@ -79,8 +78,6 @@ def check_weather() -> tuple:
 
         del precip, data, body
         gc.collect()
-        print(f"Weather: heap after = {gc.mem_free()} bytes")  # TEMP: remove before final deploy
-
         print(f"Weather: rain_6h={rain_6h:.3f}\" forecast_12h={forecast_12h:.3f}\"")
         return rain_6h, forecast_12h, True
 
