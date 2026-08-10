@@ -63,6 +63,10 @@ def _https_post(host, path, body_bytes, ca_cert):
 
 
 def log(event, rain_6h, forecast_12h, decision, block_reason, api_success):
+    if "YOUR_DEPLOYMENT_ID" in config.GOOGLE_SHEETS_URL:
+        print("Logger: Google Sheets not configured, skipping")
+        return
+
     try:
         wlan = network.WLAN(network.STA_IF)
         rssi = wlan.status("rssi") if wlan.isconnected() else 0
