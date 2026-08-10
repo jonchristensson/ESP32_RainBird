@@ -309,8 +309,8 @@
     <div class="section-body">
       <p>Two tools. One you already have; the other needs downloading once.</p>
 
-      <h3>File transfer — webrepl_cli.py</h3>
-      <p>Already in the project root. This pushes files but <strong>cannot</strong> open an interactive prompt and <strong>cannot</strong> reboot the device — the <span class="inline-code">--reboot</span> flag shown in some WebREPL docs does not exist in this script.</p>
+      <h3>File transfer — tools/webrepl_cli.py</h3>
+      <p>Already in the project. This pushes files but <strong>cannot</strong> open an interactive prompt and <strong>cannot</strong> reboot the device — the <span class="inline-code">--reboot</span> flag shown in some WebREPL docs does not exist in this script.</p>
 
       <h3>Interactive prompt — the WebREPL browser client</h3>
       <p>Needed for rebooting and for running any command on the device. Clone it once:</p>
@@ -392,7 +392,7 @@ arp -a</code></pre>
 
       <div class="warning"><strong>Ctrl+C stops the main loop.</strong> While you sit at the prompt there are no weather checks, no logging, and no WiFi watchdog. The relay holds its last state — de-energized, so irrigation is allowed. Nothing is at risk, but you will see a gap in the Google Sheet for as long as you stay there, and the device will sit idle indefinitely until you reboot it. Don't wander off and leave it parked.</div>
 
-      <div class="danger"><strong>WebREPL accepts one client at a time.</strong> While your browser session holds the port, every <span class="inline-code">webrepl_cli.py</span> push will fail. Disconnect the browser before pushing files, and reconnect afterwards. Nearly every confusing "the push isn't working" moment is this.</div>
+      <div class="danger"><strong>WebREPL accepts one client at a time.</strong> While your browser session holds the port, every <span class="inline-code">tools/webrepl_cli.py</span> push will fail. Disconnect the browser before pushing files, and reconnect afterwards. Nearly every confusing "the push isn't working" moment is this.</div>
     </div>
   </div>
 
@@ -409,7 +409,7 @@ arp -a</code></pre>
       <ol class="steps">
         <li><strong>Disconnect the browser</strong> — single client only.</li>
         <li><strong>Push the file:</strong>
-          <pre><code>python webrepl_cli.py -p &lt;OTA_PASSWORD&gt; weather.py &lt;device_ip&gt;:weather.py</code></pre>
+          <pre><code>python tools/webrepl_cli.py -p &lt;OTA_PASSWORD&gt; weather.py &lt;device_ip&gt;:weather.py</code></pre>
           The destination filename is given explicitly, so a typo silently creates a new file rather than replacing the one you meant. Keep both sides identical unless you have a reason not to.</li>
         <li><strong>Reconnect the browser</strong>, click the terminal, press <strong>Ctrl+C</strong>.</li>
         <li><strong>Reboot</strong> so the new file is imported:
@@ -535,7 +535,7 @@ config.RAIN_THRESHOLD_6H</code></pre>
 
       <h3>Repairing from safe mode</h3>
       <ol class="steps">
-        <li>Disconnect the browser, push the corrected file with <span class="inline-code">webrepl_cli.py</span> as usual.</li>
+        <li>Disconnect the browser, push the corrected file with <span class="inline-code">tools/webrepl_cli.py</span> as usual.</li>
         <li><strong>Wait at least 60 seconds</strong> before rebooting.</li>
         <li>Reconnect and reboot with <span class="inline-code">import machine; machine.reset()</span>.</li>
       </ol>
@@ -574,7 +574,7 @@ config.RAIN_THRESHOLD_6H</code></pre>
       <ol class="steps">
         <li>Edit <span class="inline-code">secrets.py</span> locally with the <strong>new</strong> credentials.</li>
         <li>Push it to the device <em>while the old network is still up</em> and the device is still reachable.</li>
-        <li>Confirm the push succeeded — no errors from <span class="inline-code">webrepl_cli.py</span>.</li>
+        <li>Confirm the push succeeded — no errors from <span class="inline-code">tools/webrepl_cli.py</span>.</li>
         <li><em>Now</em> change the router.</li>
         <li>The device loses its connection, reconnects on the new network, and resumes. Watch for a fresh row in the Sheet to confirm.</li>
       </ol>

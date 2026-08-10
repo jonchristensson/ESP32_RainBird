@@ -1,6 +1,6 @@
-import sys, json, urllib.request
+import sys, os, json, urllib.request
 
-sys.path.insert(0, ".")
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 from secrets import LATITUDE, LONGITUDE
 
 URL = (

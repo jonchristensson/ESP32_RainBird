@@ -666,7 +666,7 @@
         <li><span class="inline-code">mpremote</span> installed on your PC (<span class="inline-code">pip install mpremote</span> if not — one-time)</li>
         <li>Your COM port (Device Manager → Ports, or the PowerShell one-liner in flash-guide.html Step 1a)</li>
         <li>Your <span class="inline-code">OTA_PASSWORD</span> from <span class="inline-code">secrets.py</span> — needed for the config pushes below</li>
-        <li><span class="inline-code">webrepl_cli.py</span> is already in the project root — no download needed</li>
+        <li><span class="inline-code">tools/webrepl_cli.py</span> is already in the project — no download needed</li>
       </ul>
 
       <h3>1. Power on and watch the boot</h3>
@@ -688,7 +688,7 @@
       <ul class="checklist">
         <li>Exit the REPL with <strong>Ctrl+]</strong> — this only detaches your serial session, the device keeps running</li>
         <li>On your PC, edit your local <span class="inline-code">config.py</span>: set <span class="inline-code">RAIN_THRESHOLD_6H = -1.0</span> — use a negative value, not <span class="inline-code">0.0</span>. The comparison in <span class="inline-code">irrigation.py</span> is strict (<span class="inline-code">rain_6h &gt; threshold</span>), and <span class="inline-code">rain_6h</span> is often exactly <span class="inline-code">0.000</span> on a dry day, so <span class="inline-code">0.0</span> won't reliably force a block</li>
-        <li>Push it over WiFi from the project root: <span class="inline-code">python webrepl_cli.py -p &lt;OTA_PASSWORD&gt; config.py &lt;device_ip&gt;:config.py</span> (use the IP from step 1)</li>
+        <li>Push it over WiFi from the project root: <span class="inline-code">python tools/webrepl_cli.py -p &lt;OTA_PASSWORD&gt; config.py &lt;device_ip&gt;:config.py</span> (use the IP from step 1)</li>
         <li>Reboot to apply it — press <strong>EN</strong> on the board, or run <span class="inline-code">mpremote connect COM4 reset</span></li>
         <li>Reopen serial (<span class="inline-code">mpremote connect COM4 repl</span>) — you should hear the relay <strong>click</strong> and see <em>"Irrigation: BLOCKING…"</em> in the output</li>
         <li>Multimeter on NC/COM: <strong>should now show open (no continuity)</strong></li>
@@ -707,7 +707,7 @@
       <h3>5. Restore normal thresholds</h3>
       <ul class="checklist">
         <li>Edit your local <span class="inline-code">config.py</span> back to <span class="inline-code">RAIN_THRESHOLD_6H = 0.25</span> and <span class="inline-code">RAIN_THRESHOLD_12H = 0.5</span></li>
-        <li>Push it — same <span class="inline-code">webrepl_cli.py</span> command as step 3</li>
+        <li>Push it — same <span class="inline-code">tools/webrepl_cli.py</span> command as step 3</li>
         <li>Reboot, confirm the relay de-energizes (click), and the multimeter on NC/COM beeps again (closed)</li>
       </ul>
 

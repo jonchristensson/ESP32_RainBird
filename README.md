@@ -162,21 +162,18 @@ To temporarily force a rain condition for testing, set `RAIN_THRESHOLD_6H = -1.0
 
 Once the device is running and connected to WiFi, you can push updated files without physical access.
 
-Download the WebREPL CLI tool:
-```
-curl -O https://raw.githubusercontent.com/micropython/webrepl/master/webrepl_cli.py
-```
+The WebREPL CLI tool is already vendored in this repo at `tools/webrepl_cli.py`.
 
 Push a file:
 ```
-python webrepl_cli.py -p <OTA_PASSWORD> updated_file.py <device_ip>:updated_file.py
+python tools/webrepl_cli.py -p <OTA_PASSWORD> updated_file.py <device_ip>:updated_file.py
 ```
 
 > **Security note:** MicroPython's WebREPL uses an unencrypted WebSocket (`ws://`). The OTA password is sent in plaintext over the network. This is acceptable on a trusted home network, but anyone able to observe local traffic during a push would see the password. Do not use this over an untrusted or public network.
 
 Find the device IP in the serial output on boot, or check your router's DHCP table. After pushing all changed files, reset the device:
 ```
-python webrepl_cli.py -p <OTA_PASSWORD> --reboot <device_ip>
+python tools/webrepl_cli.py -p <OTA_PASSWORD> --reboot <device_ip>
 ```
 
 ---
