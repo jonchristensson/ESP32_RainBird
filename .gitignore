@@ -2,3 +2,11 @@ secrets.py
 __pycache__/
 *.pyc
 .DS_Store
+
+work/
+.claude/
+CLAUDE.md
+.vscode/
+.idea/
+*.log
+.env
