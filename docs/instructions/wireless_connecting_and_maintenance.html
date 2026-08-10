@@ -343,7 +343,7 @@
       <h3>Set a DHCP reservation — do this now</h3>
       <p>The permanent fix is to pin the address in your router so it never moves. In your router's admin page, find the DHCP or LAN settings, locate the ESP32 in the client list, and reserve its current IP against its MAC address. Espressif MACs commonly begin <span class="inline-code">24:0A:C4</span>, <span class="inline-code">30:AE:A4</span>, <span class="inline-code">7C:9E:BD</span>, or <span class="inline-code">A4:CF:12</span>, which helps pick it out of a crowded list.</p>
 
-      <div class="note"><strong>The exact menu name varies by router brand</strong> — the same thing as a DHCP reservation, just named differently. Two routes to it, both writing the same list: <span class="inline-code">LAN → DHCP Server → Enable Manual Assignment</span>, which shows all bindings together. Because DHCP is served by the primary router, the binding holds no matter which mesh node the ESP32 associates with.</div>
+      <div class="note"><strong>The exact menu name varies by router brand</strong> — look for "DHCP reservation," "static lease," "address reservation," or "MAC/IP binding" in your router's admin panel, usually under LAN or DHCP server settings. If your network uses a mesh system, the reservation is typically managed centrally by the primary router/node and holds regardless of which node the ESP32 associates with.</div>
 
       <div class="warning"><strong>Binding captures whatever address the device holds at that moment</strong> — confirm it's the one you want before enabling. Afterwards, reboot the device and check it returns on the same IP; that proves the binding is doing the work rather than the device simply holding an unexpired lease.</div>
 
