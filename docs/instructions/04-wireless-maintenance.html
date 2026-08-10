@@ -278,17 +278,17 @@
         </thead>
         <tbody>
           <tr>
-            <td class="mono">flash-guide.html</td>
+            <td class="mono">02-flash-guide.html</td>
             <td>MicroPython firmware, first-time file upload over USB, serial verification</td>
             <td>Bench only — needs a USB data cable</td>
           </tr>
           <tr>
-            <td class="mono">wiring_instructions.html</td>
+            <td class="mono">03-wiring.html</td>
             <td>Boards, wiring table, converter calibration, bench tests, soldering, installation</td>
             <td>Build and install — one time</td>
           </tr>
           <tr>
-            <td class="mono">wireless_connecting_and_maintenance.html</td>
+            <td class="mono">04-wireless-maintenance.html</td>
             <td>Remote access, pushing files, monitoring, recovery</td>
             <td><strong>This one — ongoing, after install</strong></td>
           </tr>
@@ -625,7 +625,7 @@ config.RAIN_THRESHOLD_6H</code></pre>
 
       <div class="ladder-step last">
         <div class="rung">Rung 5 — Open the enclosure, connect USB</div>
-        Last resort, and awkward by design since the wiring is permanent. From here you're back to <span class="inline-code">flash-guide.html</span> — serial console, <span class="inline-code">mpremote</span>, and a full re-upload if needed. Reaching this rung means WiFi itself is broken (wrong credentials pushed, router changed first, or dead antenna).
+        Last resort, and awkward by design since the wiring is permanent. From here you're back to <span class="inline-code">02-flash-guide.html</span> — serial console, <span class="inline-code">mpremote</span>, and a full re-upload if needed. Reaching this rung means WiFi itself is broken (wrong credentials pushed, router changed first, or dead antenna).
       </div>
 
       <div class="success"><strong>Throughout all of this, irrigation keeps running.</strong> Every failure state — crashed, unreachable, safe mode, powered off — leaves the relay de-energized and the sensor circuit closed, which the Rain Bird reads as "no rain detected, water normally." You have time to fix things properly rather than in a hurry.</div>
