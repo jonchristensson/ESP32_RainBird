@@ -16,6 +16,21 @@ logic, a new communication path), consider opening an issue first to describe
 the problem and your proposed approach before sending a pull request. Small
 fixes (typos, doc corrections, obvious bugs) can go straight to a PR.
 
+## Commit hooks
+
+The repo ships git hooks that block credentials and personal data (precise
+coordinates, LAN IPs, MAC addresses, tokens, non-noreply emails, and any value
+from your `secrets.py`) in staged changes and commit messages. Enable them
+once per clone:
+
+```
+git config core.hooksPath .githooks
+```
+
+To block other private strings (street, router model, subnet), list them one
+per line in a gitignored `.private-patterns` file at the repo root. To scan
+every tracked file at any time: `python .githooks/check_private.py --tree`.
+
 ## Commit convention
 
 Commit messages use the prefix:

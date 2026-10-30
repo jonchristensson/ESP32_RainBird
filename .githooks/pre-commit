@@ -1,0 +1,3 @@
+#!/bin/sh
+# Blocks staged credentials and personal data. See check_private.py.
+exec python "$(git rev-parse --show-toplevel)/.githooks/check_private.py"

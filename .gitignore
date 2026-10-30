@@ -1,4 +1,5 @@
 secrets.py
+.private-patterns
 __pycache__/
 *.pyc
 .DS_Store

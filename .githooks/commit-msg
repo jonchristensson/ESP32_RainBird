@@ -1,0 +1,3 @@
+#!/bin/sh
+# Blocks credentials and personal data in the commit message. See check_private.py.
+exec python "$(git rev-parse --show-toplevel)/.githooks/check_private.py" --message "$1"
